@@ -1,0 +1,199 @@
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: ecommerce-app
+#  namespace: default
+#  labels:
+#    app.default.com/env: dev
+#    app.default.com/cost-center: none
+#    app.default.com/application-code: code000
+#    app.default.com/project: commerce
+#    app.default.com/pmo: pmo000
+#spec:
+#  selector:
+#    app: commerce
+#    pod: ecommerce-app-pod
+#  ports:
+#    - name: http
+#      targetPort: 8080
+#      port: 8080
+#---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-app-deployment
+  namespace: default
+  labels:
+    app.default.com/env: dev
+    app.default.com/cost-center: none
+    app.default.com/application-code: code000
+    app.default.com/project: commerce
+    app.default.com/pmo: pmo000
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      pod: ecommerce-app-pod
+  template:
+    metadata:
+      labels:
+        app: commerce-app
+        pod: ecommerce-app-pod
+        app.default.com/project: commerce
+        version: "1.00"
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: ecommerce-app-container
+          image: "ecommerce-app:0.0.2"
+          resources:
+            requests:
+              memory: 60Mi
+              cpu: 100m
+            limits:
+              memory: 300Mi
+              cpu: 200m
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_USERNAME # Name of the environment variable
+              valueFrom: # Get the value of environment variable from kubernetes secrets
+                secretKeyRef:
+                  key: username
+                  name: db-ecommerce-cred
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: db-ecommerce-cred
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: url
+                  name: db-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  namespace: default
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - image: mysql:8.0
+          name: mysql
+          env:
+            - name: MYSQL_DATABASE
+              value: db_ecommerce
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: db
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: db-ecommerce-cred
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: db-ecommerce-cred
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv-volume
+  namespace: default
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  namespace: default
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecommerce-lb
+  namespace: default
+spec:
+  selector:
+    app: commerce-app
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 9595
+      targetPort: 8080
+      nodePort: 30001
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-ecommerce-cred
+type: Opaque
+data:
+  password: YWRtaW4K
+  username: dXNlcm5hbWUK
+
+#echo "jdbc:mysql://mysql-service:3306/ecommerce?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false" | base64
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+data:
+  db: db-commerce
+  url: jdbc:mysql://mysql-service:3306/polls?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+  #amRiYzpteXNxbDovL215c3FsLXNlcnZpY2U6MzMwNi9lY29tbWVyY2U/dXNlU1NMPWZhbHNlJnNl
+  #cnZlclRpbWV6b25lPVVUQyZ1c2VMZWdhY3lEYXRldGltZUNvZGU9ZmFsc2UK
+#"jdbc:mysql://mysql-service:3306/polls?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false" | base64

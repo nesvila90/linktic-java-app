@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.16/6dc192c7f93ec1853f70d59d8a6dcf94eb42866/lombok-1.18.16.jar" />
+        </processorPath>
+        <module name="product-catalog-service.bootstrap.main" />
+        <module name="product-catalog-service.h2-commons.test" />
+        <module name="product-catalog-service.usecase.test" />
+        <module name="product-catalog-service.bootstrap.test" />
+        <module name="product-catalog-service.reactive-batch.main" />
+        <module name="product-catalog-service.usecase.main" />
+        <module name="product-catalog-service.h2-commons.main" />
+        <module name="product-catalog-service.model.test" />
+        <module name="product-catalog-service.reactive-batch.test" />
+        <module name="product-catalog-service.reactive-persistence.test" />
+        <module name="product-catalog-service.reactive-web.test" />
+        <module name="product-catalog-service.model.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.16/6dc192c7f93ec1853f70d59d8a6dcf94eb42866/lombok-1.18.16.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.4.2.Final/e55bd90d51cddd638c07d5bd89fc7535d4e3d069/mapstruct-processor-1.4.2.Final.jar" />
+        </processorPath>
+        <module name="product-catalog-service.reactive-persistence.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.16/6dc192c7f93ec1853f70d59d8a6dcf94eb42866/lombok-1.18.16.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/2.5.5/1b42319eedaba1ddf25ec6c5b28b5ed732a8fcf8/spring-boot-configuration-processor-2.5.5.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.4.2.Final/e55bd90d51cddd638c07d5bd89fc7535d4e3d069/mapstruct-processor-1.4.2.Final.jar" />
+        </processorPath>
+        <module name="product-catalog-service.reactive-web.main" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="11">
+      <module name="product-catalog-service.h2-reactive-connector" target="11" />
+      <module name="product-catalog-service.h2-reactive-connector.main" target="11" />
+      <module name="product-catalog-service.h2-reactive-connector.test" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

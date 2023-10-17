@@ -1,0 +1,19 @@
+buildscript {
+    ext {
+        springBootVersion = '2.5.5'
+        mapStructVersion = '1.4.2.Final'
+        jacocoVersion = '0.8.5'
+        lombokVersion = '1.18.16'
+        mapStructVersion = '1.4.2.Final'
+
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.5.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'jacoco'
+}
+
+apply from: './main.gradle'
